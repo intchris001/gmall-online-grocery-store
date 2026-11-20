@@ -1,0 +1,442 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ product.name }} - GMall{% endblock %}
+
+{% block content %}
+<div class="product-detail-container">
+    <div class="product-detail-left">
+        <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}" class="product-detail-image">
+    </div>
+    <div class="product-detail-right">
+        <h1 class="product-detail-name">{{ product.name }}</h1>
+        <p class="product-detail-price">${{ "%.2f"|format(product.price) }}</p>
+        <p class="product-detail-unit">Per {{ product.unit }}</p>
+        <p class="product-detail-description">{{ product.description }}</p>
+        
+        <div class="product-detail-stock">
+            <p class="stock-status {% if product.stock > 0 %}in-stock{% else %}out-of-stock{% endif %}" data-id="{{ product.id }}">
+                {% if product.stock > 0 %}In Stock ({{ product.stock }} remaining){% else %}Out of Stock{% endif %}
+            </p>
+        </div>
+        
+        {% if product.stock > 0 %}
+        <div class="product-detail-actions">
+            <div class="quantity-selector">
+                <button class="quantity-btn" id="decrease-quantity">-</button>
+                <input type="number" id="product-quantity" class="quantity-input" value="1" min="1" max="{{ product.stock }}">
+                <button class="quantity-btn" id="increase-quantity">+</button>
+            </div>
+            <button class="add-to-cart-large" id="add-to-cart-btn" data-id="{{ product.id }}">
+                Add to Cart
+            </button>
+        </div>
+        {% else %}
+        <button class="add-to-cart-large disabled" disabled>
+            Out of Stock
+        </button>
+        {% endif %}
+        
+        <div class="product-detail-meta">
+            <p><strong>Category:</strong> <a href="/category/{{ product.category }}">{{ product.category }}</a> > 
+               <a href="/category/{{ product.category }}/{{ product.subcategory }}">{{ product.subcategory }}</a></p>
+        </div>
+    </div>
+</div>
+
+<div class="product-detail-tabs">
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="description">Description</button>
+        <button class="tab-btn" data-tab="details">Details</button>
+    </div>
+    <div class="tab-content">
+        <div class="tab-pane active" id="description">
+            <h3>Product Description</h3>
+            <p>{{ product.description }}</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus efficitur, felis ut iaculis tempus, nibh urna ultrices eros, at varius nunc nulla nec turpis. Maecenas eget hendrerit nisi, eu facilisis nulla.</p>
+        </div>
+        <div class="tab-pane" id="details">
+            <h3>Product Details</h3>
+            <table class="details-table">
+                <tr>
+                    <td>Product ID</td>
+                    <td>{{ product.id }}</td>
+                </tr>
+                <tr>
+                    <td>Unit</td>
+                    <td>{{ product.unit }}</td>
+                </tr>
+                <tr>
+                    <td>Category</td>
+                    <td>{{ product.category }}</td>
+                </tr>
+                <tr>
+                    <td>Subcategory</td>
+                    <td>{{ product.subcategory }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="related-products">
+    <h2>Related Products</h2>
+    <div class="product-grid">
+        {% for related in related_products %}
+        <div class="product-card">
+            <a href="{{ url_for('product_detail', product_id=related.id) }}" class="product-link">
+                <img src="{{ url_for('static', filename='images/' + related.image) }}" alt="{{ related.name }}" class="product-image">
+                <h3 class="product-name">{{ related.name }}</h3>
+                <p class="product-price">${{ "%.2f"|format(related.price) }}</p>
+                <p class="product-unit">Per {{ related.unit }}</p>
+                <p class="stock-status {% if related.stock > 0 %}in-stock{% else %}out-of-stock{% endif %}" data-id="{{ related.id }}">
+                    {% if related.stock > 0 %}In Stock ({{ related.stock }} remaining){% else %}Out of Stock{% endif %}
+                </p>
+            </a>
+            <button class="add-to-cart" data-id="{{ related.id }}" {% if related.stock <= 0 %}disabled{% endif %}>
+                {% if related.stock > 0 %}Add to Cart{% else %}Out of Stock{% endif %}
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Tabs functionality
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons and panes
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabPanes.forEach(pane => pane.classList.remove('active'));
+            
+            // Add active class to current button
+            button.classList.add('active');
+            
+            // Show the corresponding tab pane
+            const tabId = button.dataset.tab;
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+    
+    // Quantity selector
+    const decreaseBtn = document.getElementById('decrease-quantity');
+    const increaseBtn = document.getElementById('increase-quantity');
+    const quantityInput = document.getElementById('product-quantity');
+    
+    if (decreaseBtn && increaseBtn && quantityInput) {
+        decreaseBtn.addEventListener('click', function() {
+            const currentValue = parseInt(quantityInput.value);
+            if (currentValue > 1) {
+                quantityInput.value = currentValue - 1;
+            }
+        });
+        
+        increaseBtn.addEventListener('click', function() {
+            const currentValue = parseInt(quantityInput.value);
+            const maxValue = parseInt(quantityInput.getAttribute('max'));
+            if (currentValue < maxValue) {
+                quantityInput.value = currentValue + 1;
+            }
+        });
+        
+        // Add to cart with quantity
+        const addToCartBtn = document.getElementById('add-to-cart-btn');
+        if (addToCartBtn) {
+            addToCartBtn.addEventListener('click', function() {
+                const productId = this.dataset.id;
+                const quantity = parseInt(quantityInput.value);
+                
+                if (quantity <= 0) {
+                    alert('Please select a valid quantity');
+                    return;
+                }
+                
+                // Display loading state
+                const originalText = this.textContent;
+                this.textContent = 'Adding...';
+                this.disabled = true;
+                
+                // Add one by one to cart
+                let successCount = 0;
+                let lastError = null;
+                
+                const addOne = (currentCount) => {
+                    if (currentCount >= quantity) {
+                        // All items added
+                        if (successCount > 0) {
+                            this.textContent = `Added ${successCount} items!`;
+                            setTimeout(() => {
+                                this.textContent = originalText;
+                                this.disabled = false;
+                            }, 2000);
+                            
+                            // Refresh cart count
+                            fetch('/api/cart')
+                                .then(response => response.json())
+                                .then(data => {
+                                    const cartCount = document.getElementById('cart-count');
+                                    if (cartCount) {
+                                        const count = data.reduce((total, item) => total + item.quantity, 0);
+                                        cartCount.textContent = count;
+                                    }
+                                });
+                        } else {
+                            // Add failed
+                            this.textContent = originalText;
+                            this.disabled = false;
+                            if (lastError) {
+                                alert(lastError);
+                            }
+                        }
+                        return;
+                    }
+                    
+                    // Add one item
+                    fetch('/api/cart/add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ id: productId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            successCount++;
+                            
+                            // Update stock display
+                            if (data.stock !== undefined) {
+                                const stockStatus = document.querySelector(`.stock-status[data-id="${productId}"]`);
+                                if (stockStatus) {
+                                    if (data.stock <= 0) {
+                                        stockStatus.classList.remove('in-stock');
+                                        stockStatus.classList.add('out-of-stock');
+                                        stockStatus.textContent = 'Out of Stock';
+                                        
+                                        // Stop adding, no stock left
+                                        this.textContent = `Added ${successCount} items!`;
+                                        setTimeout(() => {
+                                            this.textContent = 'Out of Stock';
+                                            this.disabled = true;
+                                        }, 2000);
+                                        
+                                        // Refresh cart count
+                                        fetch('/api/cart')
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                const cartCount = document.getElementById('cart-count');
+                                                if (cartCount) {
+                                                    const count = data.reduce((total, item) => total + item.quantity, 0);
+                                                    cartCount.textContent = count;
+                                                }
+                                            });
+                                        return;
+                                    } else {
+                                        stockStatus.textContent = `In Stock (${data.stock} remaining)`;
+                                    }
+                                }
+                            }
+                            
+                            // Continue adding next item
+                            addOne(currentCount + 1);
+                        } else {
+                            // Add failed, display error and stop
+                            lastError = data.message || 'Add failed';
+                            this.textContent = originalText;
+                            this.disabled = false;
+                            alert(lastError);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error adding to cart:', error);
+                        lastError = 'Add to cart failed, please try again later';
+                        
+                        // Complete adding
+                        addOne(quantity);
+                    });
+                };
+                
+                // Start adding one by one
+                addOne(0);
+            });
+        }
+    }
+});
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.product-detail-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 30px;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.product-detail-left {
+    flex: 1;
+    min-width: 300px;
+}
+
+.product-detail-right {
+    flex: 1;
+    min-width: 300px;
+}
+
+.product-detail-image {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.product-detail-name {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.product-detail-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.product-detail-unit {
+    color: var(--light-text);
+    margin-bottom: 15px;
+}
+
+.product-detail-description {
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.product-detail-stock {
+    margin-bottom: 20px;
+}
+
+.product-detail-actions {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+}
+
+.add-to-cart-large {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    flex-grow: 1;
+    max-width: 200px;
+}
+
+.add-to-cart-large:hover {
+    background-color: var(--primary-hover);
+}
+
+.add-to-cart-large.disabled {
+    background-color: var(--disabled-color);
+    cursor: not-allowed;
+}
+
+.product-detail-meta {
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.product-detail-tabs {
+    margin-bottom: 30px;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tab-btn {
+    padding: 15px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    border-bottom: 3px solid transparent;
+}
+
+.tab-btn.active {
+    border-bottom-color: var(--primary-color);
+    font-weight: bold;
+}
+
+.tab-content {
+    padding: 20px;
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+.details-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.details-table tr {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.details-table td {
+    padding: 10px;
+}
+
+.details-table td:first-child {
+    font-weight: bold;
+    width: 150px;
+}
+
+.related-products h2 {
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .product-detail-container {
+        flex-direction: column;
+    }
+    
+    .product-detail-actions {
+        flex-direction: column;
+    }
+    
+    .add-to-cart-large {
+        max-width: none;
+    }
+}
+</style>
+{% endblock %} 

@@ -1,0 +1,191 @@
+{
+    "products": [
+        {
+            "id": "1",
+            "name": "Pet Treats",
+            "image": "products/Pet Treats.jpeg",
+            "price": 2.07,
+            "unit": "pack",
+            "stock": 11,
+            "category": "Pet Supplies",
+            "subcategory": "Pet Treats",
+            "description": "Premium quality pet treats"
+        },
+        {
+            "id": "2",
+            "name": "Cola ",
+            "image": "products/Cola .jpeg",
+            "price": 8.1,
+            "unit": "kg",
+            "stock": 4,
+            "category": "Beverages",
+            "subcategory": "Soda",
+            "description": "Premium quality cola "
+        },
+        {
+            "id": "3",
+            "name": "Ice Cream - Vanilla",
+            "image": "products/Ice Cream - Vanilla.jpeg",
+            "price": 6.84,
+            "unit": "bottle",
+            "stock": 2,
+            "category": "Food",
+            "subcategory": "Frozen Food",
+            "description": "Premium quality ice cream - vanilla"
+        },
+        {
+            "id": "4",
+            "name": "Shower Gel",
+            "image": "products/Shower Gel.jpeg",
+            "price": 12.1,
+            "unit": "box",
+            "stock": 11,
+            "category": "Personal Care",
+            "subcategory": "Bath & Body",
+            "description": "Premium quality shower gel"
+        },
+        {
+            "id": "5",
+            "name": "All-Purpose Cleaner",
+            "image": "products/All-Purpose Cleaner.jpeg",
+            "price": 7.1,
+            "unit": "item",
+            "stock": 34,
+            "category": "Household",
+            "subcategory": "Cleaning",
+            "description": "Premium quality all-purpose cleaner"
+        },
+        {
+            "id": "6",
+            "name": "Chicken Breast",
+            "image": "products/Chicken Breast.jpeg",
+            "price": 12.15,
+            "unit": "pack",
+            "stock": 25,
+            "category": "Food",
+            "subcategory": "Fresh Food",
+            "description": "Premium quality chicken breast"
+        },
+        {
+            "id": "7",
+            "name": "Premium Dog Food",
+            "image": "products/Premium Dog Food.jpeg",
+            "price": 5.43,
+            "unit": "pack",
+            "stock": 14,
+            "category": "Pet Supplies",
+            "subcategory": "Pet Food",
+            "description": "Premium quality premium dog food"
+        },
+        {
+            "id": "8",
+            "name": "Fresh Spinach",
+            "image": "products/Fresh Spinach.jpeg",
+            "price": 9.28,
+            "unit": "pack",
+            "stock": 10,
+            "category": "Food",
+            "subcategory": "Fresh Food",
+            "description": "Premium quality fresh spinach"
+        },
+        {
+            "id": "9",
+            "name": "Premium Coffee",
+            "image": "products/Premium Coffee.jpeg",
+            "price": 6.44,
+            "unit": "box",
+            "stock": 21,
+            "category": "Beverages",
+            "subcategory": "Coffee",
+            "description": "Premium quality premium coffee"
+        },
+        {
+            "id": "10",
+            "name": "Frozen Pizza",
+            "image": "products/Frozen Pizza.jpeg",
+            "price": 6.48,
+            "unit": "bottle",
+            "stock": 37,
+            "category": "Food",
+            "subcategory": "Frozen Food",
+            "description": "Premium quality frozen pizza"
+        },
+        {
+            "id": "11",
+            "name": "Kitchen Towels",
+            "image": "products/Kitchen Towels.jpeg",
+            "price": 9.25,
+            "unit": "kg",
+            "stock": 48,
+            "category": "Household",
+            "subcategory": "Kitchen",
+            "description": "Premium quality kitchen towels"
+        },
+        {
+            "id": "12",
+            "name": "Orange Juice",
+            "image": "products/Orange Juice.jpeg",
+            "price": 14.41,
+            "unit": "item",
+            "stock": 5,
+            "category": "Beverages",
+            "subcategory": "Juice",
+            "description": "Premium quality orange juice"
+        },
+        {
+            "id": "13",
+            "name": "Frozen Mixed Vegetables",
+            "image": "products/Frozen Mixed Vegetables.jpeg",
+            "price": 13.02,
+            "unit": "kg",
+            "stock": 49,
+            "category": "Food",
+            "subcategory": "Frozen Food",
+            "description": "Premium quality frozen mixed vegetables"
+        },
+        {
+            "id": "14",
+            "name": "Cat Food - Salmon",
+            "image": "products/Cat Food - Salmon.jpeg",
+            "price": 6.93,
+            "unit": "pack",
+            "stock": 9,
+            "category": "Pet Supplies",
+            "subcategory": "Pet Food",
+            "description": "Premium quality cat food - salmon"
+        },
+        {
+            "id": "15",
+            "name": "Organic Bananas",
+            "image": "products/Organic Bananas.jpeg",
+            "price": 3.33,
+            "unit": "box",
+            "stock": 50,
+            "category": "Food",
+            "subcategory": "Fresh Food",
+            "description": "Premium quality organic bananas"
+        }
+    ],
+    "categories": {
+        "Food": [
+            "Fresh Food",
+            "Frozen Food"
+        ],
+        "Beverages": [
+            "Juice",
+            "Soda",
+            "Coffee"
+        ],
+        "Household": [
+            "Cleaning",
+            "Kitchen"
+        ],
+        "Personal Care": [
+            "Bath & Body"
+        ],
+        "Pet Supplies": [
+            "Pet Food",
+            "Pet Treats"
+        ]
+    }
+}

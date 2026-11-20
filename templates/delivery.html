@@ -1,0 +1,136 @@
+{% extends "layout.html" %}
+
+{% block title %}Delivery Details - Fresh Grocery{% endblock %}
+
+{% set hide_categories = true %}
+{% set hide_search = true %}
+
+{% block content %}
+<div class="form-container">
+    <h1 class="form-title">Delivery Details</h1>
+    
+    <div id="form-errors" class="form-errors" style="display: none;"></div>
+    
+    <form id="delivery-form" class="delivery-form">
+        <div class="form-group">
+            <label for="name" class="form-label">Full Name *</label>
+            <input type="text" id="name" name="name" class="form-input" required>
+            <div id="name-error" class="form-error"></div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-column">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address *</label>
+                    <input type="email" id="email" name="email" class="form-input" required>
+                    <div id="email-error" class="form-error"></div>
+                </div>
+            </div>
+            
+            <div class="form-column">
+                <div class="form-group">
+                    <label for="phone" class="form-label">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" class="form-input" required>
+                    <div id="phone-error" class="form-error"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="street" class="form-label">Street Address *</label>
+            <input type="text" id="street" name="street" class="form-input" required>
+            <div id="street-error" class="form-error"></div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-column">
+                <div class="form-group">
+                    <label for="city" class="form-label">City/Suburb *</label>
+                    <input type="text" id="city" name="city" class="form-input" required>
+                    <div id="city-error" class="form-error"></div>
+                </div>
+            </div>
+            
+            <div class="form-column">
+                <div class="form-group">
+                    <label for="state" class="form-label">State/Territory *</label>
+                    <select id="state" name="state" class="form-input" required>
+                        <option value="">Select State/Territory</option>
+                        <option value="NSW">New South Wales (NSW)</option>
+                        <option value="VIC">Victoria (VIC)</option>
+                        <option value="QLD">Queensland (QLD)</option>
+                        <option value="WA">Western Australia (WA)</option>
+                        <option value="SA">South Australia (SA)</option>
+                        <option value="TAS">Tasmania (TAS)</option>
+                        <option value="ACT">Australian Capital Territory (ACT)</option>
+                        <option value="NT">Northern Territory (NT)</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <div id="state-error" class="form-error"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <a href="/cart" class="back-button">Back to Cart</a>
+            <button type="submit" class="submit-button">Place Order</button>
+        </div>
+    </form>
+    
+    <div class="order-summary">
+        <h2>Order Summary</h2>
+        <ul id="order-items" class="order-items">
+            <!-- Order items will be loaded dynamically -->
+        </ul>
+        <div class="order-total">
+            <span>Total:</span>
+            <span id="order-total-price">$0.00</span>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Load cart items for order summary
+    fetch('/api/cart')
+        .then(response => response.json())
+        .then(data => {
+            updateOrderSummary(data);
+        })
+        .catch(error => console.error('Error loading cart:', error));
+    
+    function updateOrderSummary(items) {
+        const orderItems = document.getElementById('order-items');
+        const totalElement = document.getElementById('order-total-price');
+        
+        if (items.length === 0) {
+            window.location.href = '/cart';
+            return;
+        }
+        
+        let html = '';
+        let total = 0;
+        
+        items.forEach(item => {
+            const itemTotal = item.price * item.quantity;
+            total += itemTotal;
+            
+            html += `
+                <li class="order-item">
+                    <div class="order-item-details">
+                        <span class="order-item-name">${item.name}</span>
+                        <span class="order-item-quantity">x${item.quantity}</span>
+                    </div>
+                    <span class="order-item-price">$${itemTotal.toFixed(2)}</span>
+                </li>
+            `;
+        });
+        
+        orderItems.innerHTML = html;
+        totalElement.textContent = `$${total.toFixed(2)}`;
+    }
+});
+</script>
+{% endblock %} 

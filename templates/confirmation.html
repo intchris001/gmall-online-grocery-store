@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}Order Confirmation - Fresh Grocery{% endblock %}
+
+{% set hide_categories = true %}
+{% set hide_search = true %}
+
+{% block content %}
+<div class="confirmation-container">
+    <div class="confirmation-icon">
+        <i class="fas fa-check-circle"></i>
+    </div>
+    <h1 class="confirmation-title">Order Confirmed!</h1>
+    <p class="confirmation-message">Thank you for your order. A confirmation email has been sent to your email address.</p>
+    
+    <div class="confirmation-details">
+        <h2>Order Details</h2>
+        <p><strong>Order ID:</strong> {{ order_id }}</p>
+        <p><strong>Order Date:</strong> <span id="order-date"></span></p>
+    </div>
+    
+    <a href="/" class="home-button">Continue Shopping</a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currentDate = new Date();
+    document.getElementById('order-date').textContent = currentDate.toLocaleDateString() + ' ' + currentDate.toLocaleTimeString();
+});
+</script>
+{% endblock %} 

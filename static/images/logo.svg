@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 50" width="200" height="50">
+  <style>
+    .text { font-family: 'Arial', sans-serif; font-weight: bold; }
+    .blue { fill: #3498db; }
+    .black { fill: #333; }
+  </style>
+  <g>
+    <path class="blue" d="M20,10 C14.5,10 10,14.5 10,20 C10,25.5 14.5,30 20,30 C25.5,30 30,25.5 30,20 C30,14.5 25.5,10 20,10 Z M20,28 C15.6,28 12,24.4 12,20 C12,15.6 15.6,12 20,12 C24.4,12 28,15.6 28,20 C28,24.4 24.4,28 20,28 Z"/>
+    <path class="blue" d="M18,16 L26,20 L18,24 Z"/>
+  </g>
+  <text x="40" y="25" class="text blue" font-size="24">G</text>
+  <text x="60" y="25" class="text black" font-size="20">Mall</text>
+</svg> 
